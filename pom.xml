@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.github.hooj0</groupId>
+	<artifactId>jib-docker-images</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<!--
+		@changelog Add google jib maven plugin docker images examples
+	-->
+	<name>jib docker images example</name>
+	<description>Google jib maven plugin docker images examples.</description>
+	<url>https://github.com/hooj0/jib-docker-images</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<name>Master Developers @hoojo</name>
+			<email>hoojo_@126.com</email>
+		</developer>
+	</developers>
+	
+	<scm>
+		<connection>scm:git:github.com/hooj0/jib-docker-images.git</connection>
+		<developerConnection>scm:git:github.com/hooj0/jib-docker-images.git</developerConnection>
+		<url>https://github.com/hooj0/jib-docker-images.git</url>
+	</scm>
+	
+	<properties>
+		<!-- compiler -->
+		<java.version>1.8</java.version>
+		
+		<httpclient.version>4.5.5</httpclient.version>
+		<log4j.version>1.2.17</log4j.version>
+		<slf4j.version>1.7.19</slf4j.version>
+	</properties>
+	
+	<dependencies>
+		<!-- JUnit -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Log -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<excludes>
+					<exclude>test/**</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!-- jib 构建 docker 镜像 -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>0.9.8</version>
+
+				<configuration>
+					<!-- 依赖的基础镜像，这里会从 docker hub中拉取该镜像 -->
+					<from>
+						<image>registry.cn-hangzhou.aliyuncs.com/seventh/openjdk:latest</image>
+					</from>
+					<to>
+						<!-- 当前发布镜像的仓库：名称：版本-->
+						<image>registry.cn-hangzhou.aliyuncs.com/hoojo/jib-hello:1.0</image>
+						<auth>
+					      <username>${env.REGISTRY_USERNAME}</username>
+					      <password>${env.REGISTRY_PASSWORD}</password>
+					    </auth>
+					</to>
+					<!-- 当前镜像运行的容器配置，从镜像 构建 容器  -->
+					<container>
+						<!-- JVM 的基本配置 -->
+						<jvmFlags>
+							<jvmFlag>-Xms512m</jvmFlag>
+							<jvmFlag>-Xdebug</jvmFlag>
+							<!-- <jvmFlag>-Xmy:flag=jib-rules</jvmFlag> -->
+						</jvmFlags>
+						
+						<!-- 启动容器后提供的main 函数对应的入口类  -->
+						<mainClass>io.github.hooj0.example.App</mainClass>
+						
+						<!-- main 函数类需要的参数 -->
+						<args>
+							<arg>jib</arg>
+							<arg>package</arg>
+							<arg>docker</arg>
+							<arg>images</arg>
+						</args>
+						<!-- 容器运行后暴露的端口 -->
+						<ports>
+							<port>1000</port>
+							<port>2000-2003/udp</port>
+						</ports>
+						<!-- 镜像构建容器的格式 -->
+						<format>OCI</format>
+					</container>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>
