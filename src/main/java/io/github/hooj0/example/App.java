@@ -1,15 +1,17 @@
 package io.github.hooj0.example;
 
-import java.net.URI;
 import java.nio.charset.Charset;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,33 +49,40 @@ public class App {
 				httpPost(url);
 			}
 		} else {
-			//httpPost(requestURL);
+			httpPost(requestURL);
 		}
 	}
 
 	private static void httpPost(String requestURL) {
-		log.info("request url: {}", requestURL);
+		System.out.println("request url: " + requestURL);
 
 		try {
-			URI uri = URI.create(requestURL);
-			
-			HttpPost post = new HttpPost(uri);
+			HttpPost post = new HttpPost(requestURL + "?timed=" + System.currentTimeMillis());
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			
 			StringEntity entity = new StringEntity("http post time: " + System.currentTimeMillis(), Charset.forName("UTF-8"));
 			entity.setContentEncoding("UTF-8");
-			//post.setEntity(entity);
+			post.setEntity(entity);
 			
 			HttpResponse response = httpClient.execute(post);
 			
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != HttpStatus.SC_OK) {
-				log.error("request failure, status: {}", statusCode);
+				System.err.println("request failure, status: " + statusCode);
 			} else {
 				for (Header header : response.getAllHeaders()) {
-					log.debug("header {} -> {}", header.getName(), header.getValue());
+					System.out.println(String.format("header: %s -> %s", header.getName(), header.getValue()));
 				}
+				
+		        if (response.getEntity() != null) {
+		        	HttpEntity resultEntity =  response.getEntity();
+		            System.out.println("result: " + EntityUtils.toString(resultEntity, "utf-8"));
+		            EntityUtils.consume(resultEntity);
+		        }
 			}
+			
+			HttpHost targetHost = new HttpHost(post.getURI().getHost(), post.getURI().getPort());
+			System.out.println("host: " + targetHost.getHostName() + ", port: " + targetHost.getPort() + ", addr: " + targetHost.getAddress() + ", scheme: " + targetHost.getSchemeName());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
