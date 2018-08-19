@@ -70,9 +70,9 @@ public class App {
 			if (statusCode != HttpStatus.SC_OK) {
 				System.err.println("request failure, status: " + statusCode);
 			} else {
-				for (Header header : response.getAllHeaders()) {
+				/*for (Header header : response.getAllHeaders()) {
 					System.out.println(String.format("header: %s -> %s", header.getName(), header.getValue()));
-				}
+				}*/
 				
 		        if (response.getEntity() != null) {
 		        	HttpEntity resultEntity =  response.getEntity();
@@ -84,6 +84,7 @@ public class App {
 			HttpHost targetHost = new HttpHost(post.getURI().getHost(), post.getURI().getPort());
 			System.out.println("host: " + targetHost.getHostName() + ", port: " + targetHost.getPort() + ", addr: " + targetHost.getAddress() + ", scheme: " + targetHost.getSchemeName());
 		} catch (Exception e) {
+			System.err.println(e.getMessage());
 			log.error(e.getMessage(), e);
 		}
 	}
