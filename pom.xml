@@ -46,14 +46,12 @@
 	</properties>
 	
 	<dependencies>
-		<!-- JUnit -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient.version}</version>
-			<scope>test</scope>
 		</dependency>
-
+		
 		<!-- Log -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -126,11 +124,8 @@
 					</from>
 					<to>
 						<!-- 当前发布镜像的仓库：名称：版本-->
-						<image>registry.cn-hangzhou.aliyuncs.com/hoojo/jib-hello:1.0</image>
-						<auth>
-					      <username>${env.REGISTRY_USERNAME}</username>
-					      <password>${env.REGISTRY_PASSWORD}</password>
-					    </auth>
+						<!-- <image>registry.cn-hangzhou.aliyuncs.com/hoojo/jib-hello:1.0</image> -->
+						<image>hoojo/jib-hello:1.0</image>
 					</to>
 					<!-- 当前镜像运行的容器配置，从镜像 构建 容器  -->
 					<container>
@@ -157,7 +152,7 @@
 							<port>2000-2003/udp</port>
 						</ports>
 						<!-- 镜像构建容器的格式 -->
-						<format>OCI</format>
+						<!-- <format>OCI</format> -->
 					</container>
 				</configuration>
 			</plugin>
