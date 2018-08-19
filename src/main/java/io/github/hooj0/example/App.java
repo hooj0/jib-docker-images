@@ -36,11 +36,22 @@ public class App {
 			System.out.println("arg: " + arg);
 		}
 
-		httpPost();
+		String requestURL = System.getenv("ENV_REQUEST_URL");
+		if (requestURL == null) {
+			System.out.println("ENV_REQUEST_URL empty.");
+		}
+		
+		if (requestURL.contains(",")) {
+			String[] requestURLs = requestURL.split(",");
+			for (String url : requestURLs) {
+				httpPost(url);
+			}
+		} else {
+			//httpPost(requestURL);
+		}
 	}
 
-	private static void httpPost() {
-		String requestURL = System.getenv("REQUEST_URL");
+	private static void httpPost(String requestURL) {
 		log.info("request url: {}", requestURL);
 
 		try {
@@ -49,10 +60,9 @@ public class App {
 			HttpPost post = new HttpPost(uri);
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			
-			StringEntity entity = new StringEntity("http post time: " + System.currentTimeMillis(),
-					Charset.forName("UTF-8"));
+			StringEntity entity = new StringEntity("http post time: " + System.currentTimeMillis(), Charset.forName("UTF-8"));
 			entity.setContentEncoding("UTF-8");
-			post.setEntity(entity);
+			//post.setEntity(entity);
 			
 			HttpResponse response = httpClient.execute(post);
 			
