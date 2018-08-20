@@ -2,7 +2,6 @@ package io.github.hooj0.example;
 
 import java.nio.charset.Charset;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -35,12 +34,12 @@ public class App {
 		log.info("args: {}", new Object[] { args });
 
 		for (String arg : args) {
-			System.out.println("arg: " + arg);
+			System.out.println("INFO -> arg: " + arg);
 		}
 
 		String requestURL = System.getenv("ENV_REQUEST_URL");
 		if (requestURL == null) {
-			System.out.println("ENV_REQUEST_URL empty.");
+			System.out.println("WARN -> ENV_REQUEST_URL empty.");
 		}
 		
 		if (requestURL.contains(",")) {
@@ -54,7 +53,7 @@ public class App {
 	}
 
 	private static void httpPost(String requestURL) {
-		System.out.println("request url: " + requestURL);
+		System.out.println("\nINFO -> request url: " + requestURL);
 
 		try {
 			HttpPost post = new HttpPost(requestURL + "?timed=" + System.currentTimeMillis());
@@ -68,7 +67,8 @@ public class App {
 			
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != HttpStatus.SC_OK) {
-				System.err.println("request failure, status: " + statusCode);
+				System.out.println("ERROR -> request failure, status: " + statusCode);
+				System.out.println();
 			} else {
 				/*for (Header header : response.getAllHeaders()) {
 					System.out.println(String.format("header: %s -> %s", header.getName(), header.getValue()));
@@ -76,15 +76,15 @@ public class App {
 				
 		        if (response.getEntity() != null) {
 		        	HttpEntity resultEntity =  response.getEntity();
-		            System.out.println("result: " + EntityUtils.toString(resultEntity, "utf-8"));
+		            System.out.println("INFO -> result: " + EntityUtils.toString(resultEntity, "utf-8"));
 		            EntityUtils.consume(resultEntity);
 		        }
 			}
 			
 			HttpHost targetHost = new HttpHost(post.getURI().getHost(), post.getURI().getPort());
-			System.out.println("host: " + targetHost.getHostName() + ", port: " + targetHost.getPort() + ", addr: " + targetHost.getAddress() + ", scheme: " + targetHost.getSchemeName());
+			System.out.println("INFO -> host: " + targetHost.getHostName() + ", port: " + targetHost.getPort() + ", addr: " + targetHost.getAddress() + ", scheme: " + targetHost.getSchemeName());
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			System.out.println("ERROR -> " + e.getMessage());
 			log.error(e.getMessage(), e);
 		}
 	}
