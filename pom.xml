@@ -124,7 +124,11 @@
 					</from>
 					<to>
 						<!-- 当前发布镜像的仓库：名称：版本-->
-						<!-- <image>registry.cn-hangzhou.aliyuncs.com/hoojo/jib-hello:1.0</image> -->
+						<!-- <image>registry.cn-hangzhou.aliyuncs.com/hoojo/jib-hello:1.0</image>
+						<auth>
+							<username>${env.REGISTRY_USERNAME}</username>
+      						<password>${env.REGISTRY_PASSWORD}</password>
+						</auth> -->
 						<image>hoojo/jib-hello:1.0</image>
 					</to>
 					<!-- 当前镜像运行的容器配置，从镜像 构建 容器  -->
